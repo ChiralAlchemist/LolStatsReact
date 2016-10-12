@@ -1,13 +1,22 @@
 var React = require('react')
 var ReactDOM = require('react-dom')
-var Test = require('./Test.jsx')
-
+const fakeData = require('../public/data/gameData.json')
+var GameCard = require('./GameCard.jsx')
+console.log(fakeData)
 var App = React.createClass({
   render () {
     return (
-      <div>
-        <h1> hello world  im here in real time</h1>
-        <Test />
+      <div className='app-container'>
+        <div className='container'>
+          <h1> hello world  im here in real time</h1>
+          <div className='shows'>
+            {
+              fakeData.games.map((game) => {
+                return (<GameCard game={game} key={game.gameId} />)
+              })
+            }
+          </div>
+        </div>
       </div>
     )
   }

@@ -10,9 +10,12 @@
   "author": "Joe Ashby <jashby473@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "assert": "^1.4.1",
     "axios": "0.9.1",
     "express": "4.13.4",
     "lodash": "4.6.1",
+    "mongodb": "^2.2.10",
+    "mongoose": "^4.6.2",
     "node-ensure": "0.0.0",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
