@@ -1,14 +1,14 @@
 const React = require('react')
-const { shape, string } = React.PropTypes
+const { shape, string, oneOfType, number } = React.PropTypes
 const ItemTable = React.createClass({
   propTypes: {
     stats: shape({
-      item0: string,
-      item1: string,
-      item2: string,
-      item3: string,
-      item4: string,
-      item5: string
+      item0: oneOfType([string, number]),
+      item1: oneOfType([string, number]),
+      item2: oneOfType([string, number]),
+      item3: oneOfType([string, number]),
+      item4: oneOfType([string, number]),
+      item5: oneOfType([string, number])
     })
   },
 
