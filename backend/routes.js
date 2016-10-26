@@ -1,3 +1,4 @@
+const axios = require('axios');
 const routes = function(app) {
   app.get('/test',function (req, res) {
     res.send('hello your routes work')
@@ -10,19 +11,34 @@ const routes = function(app) {
     .exec()
     .then(function (user) {
       console.log(user)
-      if(!user.length){
-        new app.mongoose.user({
-          id: summonerId,
-          name: 'hello',
-          summonerId: summonerId,
-          test: 'hello'
+      if(user.length) {
+        return res.json({
+          user: user
         })
-        .save()
-        .then(function (savedUser) {
-          res.json({
-            savedUser: savedUser
+      } else {
+        console.log('hello')
+        axios.get("https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+ summonerId+ "?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446")
+          .then(function (response) {
+            console.log('response', response)
+            new app.mongoose.user({
+              id: summonerId,
+              name: response.data[summonerId].name,
+              summonerId: summonerId,
+              test: 'hello'
+            })
+            .save()
+            .then(function (savedUser) {
+              console.log('asdfkljlj')
+              res.json({
+                savedUser: savedUser
+              })
+            })
+            .catch(function (error){
+              res.json({
+                error: error
+              })
+            })
           })
-        })
       }
     })
       //res.send(summonerId)
