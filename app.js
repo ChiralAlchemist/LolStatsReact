@@ -26,13 +26,18 @@ var assert = require('assert');
 var dataBaseUrl = 'mongodb://localhost:27017/myproject';
 
 // Use connect method to connect to the server
-var mongoose = require('mongoose');
-mongoose.connect(dataBaseUrl);
-var dataBaseConnection = mongoose.connection;
-dataBaseConnection.on('error', console.error.bind(console, 'connection error:'));
-dataBaseConnection.once('open', function () {
+app.mongoose = require('mongoose');
+app.mongoose.connect(dataBaseUrl);
+// Use native promises
+app.mongoose.Promise = global.Promise;
+//assert.equal(query.exec().constructor, global.Promise);
+app.dataBaseConnection = app.mongoose.connection;
+app.dataBaseConnection.on('error', console.error.bind(console, 'connection error:'));
+app.dataBaseConnection.once('open', function () {
   console.log('connected to mongoose')
 })
+
+require("./backend/schemaAttributes.js")(app)
 // MongoClient.connect(url, function(err, db) {
 //   assert.equal(null, err);
 //   console.log("Connected successfully to server");
@@ -66,10 +71,11 @@ dataBaseConnection.once('open', function () {
 // } else {
   app.use(express.static(__dirname + '/public'));
   console.log('im here 2')
-  app.get('*', function response(req, res) {
+  app.get('/', function response(req, res) {
     res.sendFile(path.join(__dirname, '/public/index.html'));
   });
-// }
+
+  require('./backend/routes.js')(app)
 
 app.listen(port, '0.0.0.0', function onStart(err) {
   if (err) {
