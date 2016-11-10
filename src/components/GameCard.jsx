@@ -1,5 +1,5 @@
 const React = require('react')
-const ChampionData = require('../public/data/championData.json').data
+const ChampionData = require('../../public/data/championData.json').data
 const ItemTable = require('./ItemTable.jsx')
 const Teams = require('./Teams.jsx')
 const _ = require('lodash')

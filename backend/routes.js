@@ -24,7 +24,8 @@ const routes = function(app) {
               id: summonerId,
               name: response.data[summonerId].name,
               summonerId: summonerId,
-              test: 'hello'
+              summonerLevel: response.data[summonerId].summonerLevel,
+              profileIconId: response.data[summonerId].profileIconId
             })
             .save()
             .then(function (savedUser) {

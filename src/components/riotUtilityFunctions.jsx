@@ -1,4 +1,4 @@
-const ChampionData = require('../public/data/championData.json').data
+const ChampionData = require('../../public/data/championData.json').data
 const _ = require('lodash')
 
 var utils = {

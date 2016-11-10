@@ -5,7 +5,8 @@ var loadSchema = function (app) {
     name: String,
     id: Number,
     summonerId: Number,
-    test: String
+    summonerLevel: Number,
+    profileIconId: Number
   })
   app.mongoose.user = mongoose.model('User', userSchema)
 }
