@@ -9,11 +9,11 @@ const App = React.createClass({
     return (
       <div className='app-container'>
         { console.log("this", this) }
-        { this.props.children }
+
 
         <GameContainer />
 
-
+        { this.props.children }
       </div>
     )
   }
