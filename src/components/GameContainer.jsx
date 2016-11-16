@@ -1,9 +1,10 @@
 const React = require('react')
 const GameCard = require('./GameCard.jsx')
+const { Link } = require('react-router')
 
 const GameContainer = ({games}) => (
   <div className='container'>
-    <h1> hello world  im here in real time</h1>
+    <li><Link to='/land'> hello world  im here in real time</Link></li>
     <div className='shows'>
     {
       games.map((game) => {
