@@ -1,9 +1,18 @@
-const players = (state = {}, action) => {
-  switch (action.type) {
-
-    default:
-      return state
+const initalState = {
+  highlightedPlayer: 0
+}
+const players = (state = initalState, action) => {
+  let handlers = {
+    CHANGE_SUMMONER_NAME: function (state, action) {
+      let nextState = Object.assign({}, state, {
+        highlightedPlayer: action.name
+      })
+      console.log('nextState', nextState)
+      return nextState
+    }
   }
+
+  return handlers[action.type] ? handlers[action.type](state, action) : state
 }
 
 module.exports = players

@@ -1,19 +1,12 @@
 const React = require('react')
-// const GameCard = require('./GameCard.jsx')
-// const fakeData = require('../../public/data/gameData.json')
-const GameContainer = require('../containers/GameContainer.jsx')
-
 const App = React.createClass({
+  propTypes: {
+    children: React.PropTypes.object.isRequired
+  },
   render () {
-    console.log("this", this)
     return (
       <div className='app-container'>
-        { console.log("this", this) }
-
-
-        <GameContainer />
-
-        { this.props.children }
+        {this.props.children}
       </div>
     )
   }
