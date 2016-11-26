@@ -1,7 +1,6 @@
 const React = require('react')
 const { object, arrayOf } = React.PropTypes
-const { getChampionName } = require('./riotUtilityFunctions.jsx')
-
+const MiniPlayer = require('./MiniPlayer.jsx')
 const Teams = React.createClass({
   propTypes: {
     redSide: arrayOf(object),
@@ -14,23 +13,13 @@ const Teams = React.createClass({
       <div className='teams'>
         <div className='playerTeam'>
         {playersTeam.map((player) => {
-          return (
-            <div key={player.summonerId} >
-              <img className='miniChampionPic' src={'http://ddragon.leagueoflegends.com/cdn/6.20.1/img/champion/' + getChampionName(player.championId) + '.png'} />
-              <div > {player.summonerId} </div>
-            </div>
-          )
+          return <MiniPlayer player={player} />
         })
         }
         </div>
         <div className='opposingTeam'>
         {opposingTeam.map((player) => {
-          return (
-            <div key={player.summonerId} >
-              <img className='miniChampionPic' src={'http://ddragon.leagueoflegends.com/cdn/6.20.1/img/champion/' + getChampionName(player.championId) + '.png'} />
-              <div> {player.summonerId} </div>
-            </div>
-          )
+          return <MiniPlayer player={player} />
         })
         }
         </div>

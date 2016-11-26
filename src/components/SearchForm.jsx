@@ -9,9 +9,9 @@ let SearchForm = ({handleSubmit}) => (
   </form>
 )
 
-SearchForm.propTypes({
+SearchForm.propTypes = {
   handleSubmit: React.PropTypes.func.isRequired
-})
+}
 
 SearchForm = reduxForm({
   form: 'test'
