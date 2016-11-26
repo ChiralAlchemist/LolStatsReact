@@ -10,9 +10,9 @@ const players = (state = initalState, action) => {
       let nextState = Object.assign({}, state, {
         highlightedPlayer: action.summonerName
       })
-      console.log('nextState', nextState)
-      let path = `/summoner/${action.summonerName}`
-      hashHistory.push(path)
+        // console.log('nextState', nextState)
+        // let path = `/summoner/${action.summonerName}`
+        // hashHistory.push(path)
       return nextState
     }
   }

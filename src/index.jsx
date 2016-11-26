@@ -1,12 +1,14 @@
 const React = require('react')
 const { render } = require('react-dom')
 const { Provider } = require('react-redux')
-const { createStore } = require('redux')
+const { createStore, applyMiddleware } = require('redux')
+import thunk from 'redux-thunk'
 const LoLapp = require('./reducers/index.jsx')
 import App from './components/App.jsx'
 const { Router, Route, hashHistory, IndexRoute } = require('react-router')
 const VisableLanding = require('./containers/Landing.jsx')
-const store = createStore(LoLapp)
+console.log('thunk', typeof thunk)
+const store = createStore(LoLapp, applyMiddleware(thunk))
 const GameContainer = require('./containers/GameContainer.jsx')
 
 render(
