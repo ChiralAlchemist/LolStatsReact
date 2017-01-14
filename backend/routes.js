@@ -52,7 +52,7 @@ const routes = function(app) {
       var games = response.data.games
       console.log('made it here')
       var count = 0;
-      return Promise.all(games.slice(0,1).map(function (game) {
+      return Promise.all(games.map(function (game) {
         return Promise.all(game.fellowPlayers.map(function (player){
           var summonerId = player.summonerId
           count++;
