@@ -50,44 +50,25 @@ const routes = function(app) {
     })
     .then(function (response) {
       var games = response.data.games
-      console.log('made it here', games )
+      console.log('made it here')
       var count = 0;
       return Promise.all(games.slice(0,1).map(function (game) {
         return Promise.all(game.fellowPlayers.map(function (player){
           var summonerId = player.summonerId
           count++;
           console.log(count);
-          return getSummonerName(summonerId)//Promise.resolve(axios.get("https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+ summonerId+ "?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446"))//`https://na.api.pvp.net/api/lol/na/v1.4/summoner/${summonerId}/recent?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446`))
-          .catch(function (err){
-            var retryTime = err.headers['retry-after'] * 1000;
-            var summonerId = err.config.url.match(/summoner\/\d+/g)[0].slice(9)
-            console.log("at error summonerId")
-            return new Promise(function (resolve, reject) {
-              setTimeout(function (){
-                resolve(getSummonerName(summonerId))
-              }, retryTime)
+          return checkIfAlreadyHaveSummonerInfo(summonerId).
+            then(function(dataBaseInfo) {
+              if(dataBaseInfo === false) {
+                return getSummonerName(summonerId)
+                .then(saveUserToDb)
+                .then(function (savedUser) {
+                  return Promise.resolve(savedUser)
+                })
+              }
+              return Promise.resolve(dataBaseInfo)
             })
-            // return res.json({
-            //   failed : true,
-            //   retryTime: retryTime,
-            //   err : err
-            // })
-          })
-        }
-      ))
-        // console.log('2')
-        // console.log(game.fellowPlayers)
-        // return Promise.all(
-        //   // game.fellowPlayers.map(function (player) {
-        //   // var summonerId = player.summonerId
-        //   // console.log('3', summonerId)
-        //   // console.log('player', player)
-        //   // return axios.get(`https://na.api.pvp.net/api/lol/na/v1.4/summoner/${summonerId}/recent?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446`)
-        //   // .then(function (result) {
-        //   //   console.log('this is the player info', result)
-        //   //   return result
-        //   // })
-        // }))
+        }))
       }))
       .then(function (result) {
         console.log('made it to this spot')
@@ -96,26 +77,49 @@ const routes = function(app) {
           result: result
         })
       })
-
     })
   })
-
+  function checkIfAlreadyHaveSummonerInfo (summonerId) {
+    //var summonerId = req.params.summonerId;
+    console.log("hello from checking the db")
+    return app.mongoose.user.find({
+      id: summonerId
+    })
+    .exec()
+    .then(function (user) {
+      console.log('got to the user')
+      if(user.length) {
+        return Promise.resolve(user[0])
+      }
+      return Promise.resolve(false)
+    })
+  }
+  function saveUserToDb (user) {
+    console.log('hello from save user to db')
+    return new app.mongoose.user(user)
+    .save()
+    .then(function (savedUser) {
+      console.log('succesfully saved user')
+      return Promise.resolve(savedUser)
+    })
+  }
 }
 function getSummonerName (summonerId) {
   console.log('hello from get summoner name')
   return axios.get("https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+ summonerId+ "?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446")
   .then(function (res){
-    return Promise.resolve([res.data[summonerId]])
+    return Promise.resolve(res.data[summonerId])
   })
-  // .catch(function (err){
-  //   var retryTime = err.headers['retry-after'] * 1000;
-  //   var summonerId = err.config.url.match(/summoner\/\d+/g)[0].slice(9)
-  //   console.log("rateLimit error for summonerId", summonerId)
-  //   return new Promise(function (resolve, reject) {
-  //     setTimeout(function (){
-  //       resolve(getSummonerName(summonerId))
-  //     }, retryTime)
-  //   })
-  // })
+  .catch(function (err){
+    var retryTime = err.headers['retry-after'] * 1000;
+    var summonerId = err.config.url.match(/summoner\/\d+/g)[0].slice(9)
+    console.log("rateLimit error for summonerId", summonerId)
+    return new Promise(function (resolve, reject) {
+      setTimeout(function (){
+        resolve(getSummonerName(summonerId))
+      }, retryTime)
+    })
+  })
 }
+
 module.exports = routes;
