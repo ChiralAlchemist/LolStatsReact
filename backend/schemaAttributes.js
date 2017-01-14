@@ -4,7 +4,7 @@ var loadSchema = function (app) {
   var userSchema = mongoose.Schema({
     name: String,
     id: Number,
-    summonerId: Number,
+    summonerId: Number,//{ type: Number, unqiue: true, required: true },
     summonerLevel: Number,
     profileIconId: Number
   })
