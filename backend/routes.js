@@ -95,6 +95,13 @@ const routes = function(app) {
       // }))
       .then(function (result) {
         console.log('made it to this spot', result)
+        result = _.flatten(result)
+        gameInfo.games.forEach(function (game) {
+          game.fellowPlayers.forEach(function (player, index) {
+            var playerWithName = _.find(gameInfo.dbResults, {id : player.summonerId}) || _.find(result, {id: player.summonerId})
+            if(playerWithName) game.fellowPlayers[index] = _.defaults(player, playerWithName )
+          })
+        })
         //var i = getSummonerNames(result.playerIds)
         return res.json({
           succuss: true,
