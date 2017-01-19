@@ -96,10 +96,18 @@ const routes = function(app) {
       .then(function (result) {
         console.log('made it to this spot', result)
         result = _.flatten(result)
-        gameInfo.games.forEach(function (game) {
+        gameInfo.games.forEach(function (game, gameIndex) {
           game.fellowPlayers.forEach(function (player, index) {
             var playerWithName = _.find(gameInfo.dbResults, {id : player.summonerId}) || _.find(result, {id: player.summonerId})
-            if(playerWithName) game.fellowPlayers[index] = _.defaults(player, playerWithName )
+            var name = playerWithName.name
+            var profileIconId = playerWithName.profileIconId
+            var summonerLevel = playerWithName.summonerLevel
+            console.log("player b4", player, playerWithName)
+            // if(playerWithName) gameInfo.games[gameIndex].fellowPlayers[index] = playerWithName
+            gameInfo.games[gameIndex].fellowPlayers[index].name = name
+            gameInfo.games[gameIndex].fellowPlayers[index].profileIconId = profileIconId
+            gameInfo.games[gameIndex].fellowPlayers[index].summonerLevel = summonerLevel
+            console.log('player after', gameInfo.games[gameIndex].fellowPlayers[index])
           })
         })
         //var i = getSummonerNames(result.playerIds)

@@ -20,9 +20,9 @@ export const getGameData = (summonerName) => {
     return convertSummonerNameToId(summonerName)
     .then(function (response) {
       var summonerId = response.data[summonerName.toLowerCase()].id
-      return axios.get(`https://na.api.pvp.net/api/lol/na/v1.3/game/by-summoner/${summonerId}/recent?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446`)
+      return axios.get(`/api/gameInfo/${summonerName}`)
       .then(function (response) {
-        let games = response.data.games
+        let games = response.data.gameInfo.games
         dispatch(changeGames(games))
         dispatch(changeHighlightedSummoner(summonerName))
       })
