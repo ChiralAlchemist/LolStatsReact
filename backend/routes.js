@@ -1,5 +1,6 @@
 
 const axios = require('axios');
+const _ = require("lodash");
 const routes = function(app) {
   app.get('/test',function (req, res) {
     app.mongoose.user.remove({})
@@ -53,48 +54,52 @@ const routes = function(app) {
           })
       }
     })
-      //res.send(summonerId)
   })
   app.get('/api/gameInfo/:summonerName', function (req, res) {
     var summonerName = req.params.summonerName
+    var gameInfo = {}
     axios.get(`https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/${summonerName}?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446`)
     .then(function (response) {
       var summonerId = response.data[summonerName.toLowerCase()].id
       return axios.get(`https://na.api.pvp.net/api/lol/na/v1.3/game/by-summoner/${summonerId}/recent?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446`)
     })
     .then(function (response) {
+      gameInfo = response.data
       var games = response.data.games
       console.log('made it here')
       var count = 0;
-      return Promise.all(games.map(function (game) {
-        var playerIds = game.fellowPlayers.map(function (player) {
-          return player.summonerId
-        }).join(',')
-        return checkDbBatch(playerIds)
-        .then(getSummonerNameBatch)
-        .then(saveUserToDbBatch)
-        // return Promise.all(game.fellowPlayers.map(function (player){
-        //   var summonerId = player.summonerId
-        //   count++;
-        //   console.log(count);
-        //   return checkIfAlreadyHaveSummonerInfo(summonerId).
-        //     then(function(dataBaseInfo) {
-        //       if(dataBaseInfo === false) {
-        //         return getSummonerName(summonerId)
-        //         .then(saveUserToDb)
-        //         .then(function (savedUser) {
-        //           return Promise.resolve(savedUser)
-        //         })
-        //       }
-        //       return Promise.resolve(dataBaseInfo)
-        //     })
-        // }))
-      }))
+      var playerIds = [];
+      games.forEach(function (game){
+        game.fellowPlayers.forEach(function (player) {
+          playerIds.push(player.summonerId)
+        })
+      })
+      console.log(playerIds)
+      checkDbBatch(playerIds)
+        .then(function (dbResults) {
+          gameInfo.dbResults = dbResults.savedUsers
+          return  Promise.resolve(getSummonerNames(dbResults.playerIds))
+        })
+        .then(function (newUsers){
+          return Promise.all(newUsers.map(function(newUsers) {
+            return saveUserToDbBatch(newUsers)
+          }))
+        })
+      // return Promise.all(games.map(function (game) {
+      //   var playerIds = game.fellowPlayers.map(function (player) {
+      //     return player.summonerId
+      //   }).join(',')
+      //   return checkDbBatch(playerIds)
+      //   .then(getSummonerNameBatch)
+      //   .then(saveUserToDbBatch)
+      // }))
       .then(function (result) {
-        console.log('made it to this spot')
+        console.log('made it to this spot', result)
+        //var i = getSummonerNames(result.playerIds)
         return res.json({
           succuss: true,
-          result: result
+          result: result,
+          gameInfo: gameInfo
         })
       })
     })
@@ -116,13 +121,14 @@ const routes = function(app) {
   }
   function checkDbBatch (playerIds){
     console.log('hello from checkDbBatch', playerIds)
-    var arrPlayerIds = playerIds.split(',').map(function (id){
-      return id * 1
-    })
-    console.log("arrPlayerIds", arrPlayerIds)
+    if(typeof playerIds === 'string'){
+      playerIds = playerIds.split(',').map(function (id){
+        return id * 1
+      })
+    }
     return app.mongoose.user.find({
       id: {
-        "$in": arrPlayerIds
+        "$in": playerIds
       }
     })
     .exec()
@@ -131,9 +137,12 @@ const routes = function(app) {
         playerIds: [],
         savedUsers: users
       }
-      // console.log('checkDBBatch', users)
-      console.log("checkDBBatch result", playerObj.playerIds)
-      return Promise.resolve(playerIds)
+      // find userid in db remove them from the playerIds given
+      var userIds = users.map(function (user) {return user.id})
+      playerObj.playerIds = _.difference(playerIds, userIds)
+      console.log(playerObj)
+
+      return Promise.resolve(playerObj)
     })
     .catch(function (err){
       console.log('mistakes were made', err)
@@ -149,35 +158,20 @@ const routes = function(app) {
     })
   }
   function saveUserToDbBatch (userColllection) {
-    //console.log('hello from saveUserToDbBatch')
     userColllection = Object.keys(userColllection).map(function (key, index) {
       return userColllection[key]
     })
-    console.log('hello from saveUserToDbBatch') //, userColllection
     var userColllectionPromises = userColllection.map(function (user) {
-      console.log("user is", user)
-      return app.mongoose.user.findOneAndUpdate({id :user.id}, user, {upsert: true})
+      return app.mongoose.user.findOneAndUpdate({id :user.id}, user, {upsert: true, new: true})
         .then(function (savedUser) {
-          console.log('saveduser is', savedUser)
+          console.log("savedUser", savedUser)
           return Promise.resolve(savedUser);
         })
     })
     return Promise.all(userColllectionPromises)
-    // return app.mongoose.user.insertMany(userColllection)
-    // .then(function (savedUsers) {
-    //   console.log('succesfully savedUsers', savedUsers)
-    //   return Promise.resolve(savedUsers)
-    // })
-    // .catch(function (err) {
-    //   return res.json({
-    //     failed: true,
-    //     err : err
-    //   })
-    // })
   }
 }
 function getSummonerName (summonerId) {
-  console.log('hello from get summoner name')
   return axios.get("https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+ summonerId+ "?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446")
   .then(function (res){
     return Promise.resolve(res.data[summonerId])
@@ -194,7 +188,8 @@ function getSummonerName (summonerId) {
   })
 }
 function getSummonerNameBatch (playerIds) {
-  console.log("hello from get summoner name batch")
+  //given string of comma separated of playerIds
+  //riot api can only take 40 ids at a time
   return axios.get("https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+ playerIds+ "?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446")
   .then(function (res){
     return Promise.resolve(res.data)
@@ -209,6 +204,23 @@ function getSummonerNameBatch (playerIds) {
       }, retryTime)
     })
   })
+}
+function getSummonerNames(playerIds) {
+  var groups = []
+  if(playerIds.length>40){
+
+    while(playerIds.length>40 || playerIds.length){
+      if(playerIds.length>=40){
+        groups.push(playerIds.splice(0,40))
+      } else {
+        groups.push(playerIds.splice(0, playerIds.length))
+      }
+    }
+  }
+  return Promise.all(groups.map(function (group){
+    return getSummonerNameBatch(group.join(','))
+  })
+  )
 }
 
 module.exports = routes;
