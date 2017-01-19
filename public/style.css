@@ -6,7 +6,6 @@
   position: relative;
   width: 100%;
   height: 150vh;
-  background-image: url(img/3.jpg);
   background-size: cover;
   background-position: center;
   display: flex;
@@ -16,13 +15,15 @@
   color: #333;
 }
 .championPic {
+  margin-top: auto;
+  margin-bottom: auto;
   width: 75px;
   height: 75px;
   float: left;
   border-radius: 50%
 }
 .container {
-  position: absolute;
+  position: relative;
   top: 15px;
   left: 15px;
   right: 15px;
@@ -36,8 +37,9 @@
 
 .gameCard {
   border: 2px solid black;
-  width: 90%;
-  height: 9%;
+  width: 750px;
+  height:100px;
+  margin: 2px;
   display: inline-flex;
   flex-wrap: wrap;
   text-align: left;
@@ -48,7 +50,9 @@
   width: 15px;
   height: 15px;
 }
-
+.itemTable {
+  margin-top: 25px;
+}
 .miniChampionPic {
   width: 15px;
   height: 15px;
@@ -67,7 +71,10 @@
     float: left;
     /*width:  52%;*/
 }
-
+.playerKDA {
+  margin-top: auto;
+  margin-bottom: auto;
+}
 .playerTeam {
   float: left;
   display: block;

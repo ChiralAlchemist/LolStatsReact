@@ -5,11 +5,14 @@ const MiniPlayer = React.createClass({
     player: React.PropTypes.object.isRequired
   },
   render () {
-    console.log("this.props.player", this.props.player)
+    var name = this.props.player.name
+    if (name.length > 10) {
+      name = name.slice(0, 9) + '...'
+    }
     return (
       <div key={this.props.player.summonerId} >
         <img className='miniChampionPic' src={'http://ddragon.leagueoflegends.com/cdn/6.20.1/img/champion/' + getChampionName(this.props.player.championId) + '.png'} />
-        <div > {this.props.player.name} </div>
+        <div key={this.props.player.summonerId}> {name} </div>
       </div>
     )
   }

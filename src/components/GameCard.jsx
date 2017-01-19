@@ -3,7 +3,7 @@ const ChampionData = require('../../public/data/championData.json').data
 const ItemTable = require('./ItemTable.jsx')
 const Teams = require('./Teams.jsx')
 const _ = require('lodash')
-const { object, shape, number, array } = React.PropTypes
+const { object, shape, number, array, string } = React.PropTypes
 
 const GameCard = React.createClass({
   propTypes: {
@@ -11,7 +11,8 @@ const GameCard = React.createClass({
       championId: number,
       fellowPlayers: array,
       stats: object
-    })
+    }),
+    highlightedPlayer: string
   },
   getChampionName (id) {
     var champion = _.find(ChampionData, {'key': id.toString()})
@@ -28,17 +29,20 @@ const GameCard = React.createClass({
   render () {
     let self = this
     let {fellowPlayers, championId, stats} = this.props.game
+    let highlightedPlayer = {name: this.props.highlightedPlayer, championId: championId}
+    console.log('this.props in game card', this.props)
     let championName = this.getChampionName(championId)
     let playersTeam = fellowPlayers.filter(function (player) {
       return self.filterPlayers(player)
     })
+    playersTeam.push(highlightedPlayer)
     let opposingTeam = fellowPlayers.filter(function (player) {
       return self.filterPlayers(player, true)
     })
     return (
       <div className='gameCard'>
         <img className='championPic' src={'http://ddragon.leagueoflegends.com/cdn/6.20.1/img/champion/' + championName + '.png'} />
-        <div className='playerKDA'>{`${stats.championsKilled}/${stats.numDeaths}/${stats.assists}`}</div>
+        <div className='playerKDA'>{`${stats.championsKilled || 0}/${stats.numDeaths || 0}/${stats.assists || 0}`}</div>
         <ItemTable stats={stats} />
         <Teams redSide={playersTeam} blueSide={opposingTeam} />
       </div>

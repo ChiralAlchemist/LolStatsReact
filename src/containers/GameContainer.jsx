@@ -3,7 +3,8 @@ const GameContainer = require('../components/GameContainer')
 
 const mapStateToProps = (state) => {
   return {
-    games: state.games
+    games: state.games,
+    highlightedPlayer: state.players.highlightedPlayer
   }
 }
 

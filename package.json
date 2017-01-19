@@ -46,6 +46,7 @@
     "mocha": "^2.4.5",
     "nyc": "^6.0.0",
     "react-addons-test-utils": "^0.14.7",
+    "remote-redux-devtools": "^0.5.7",
     "sinon": "^1.17.3",
     "webpack": "^1.12.13",
     "webpack-dev-middleware": "^1.8.1",

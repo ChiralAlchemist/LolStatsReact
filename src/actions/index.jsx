@@ -17,15 +17,11 @@ export const convertSummonerNameToId = (summonerName) => {
 
 export const getGameData = (summonerName) => {
   return function (dispatch) {
-    return convertSummonerNameToId(summonerName)
-    .then(function (response) {
-      var summonerId = response.data[summonerName.toLowerCase()].id
-      return axios.get(`/api/gameInfo/${summonerName}`)
+    dispatch(changeHighlightedSummoner(summonerName))
+    return axios.get(`/api/gameInfo/${summonerName}`)
       .then(function (response) {
         let games = response.data.gameInfo.games
         dispatch(changeGames(games))
-        dispatch(changeHighlightedSummoner(summonerName))
       })
-    })
   }
 }
