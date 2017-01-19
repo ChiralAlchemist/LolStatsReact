@@ -2,7 +2,7 @@
 const axios = require('axios');
 const _ = require("lodash");
 const routes = function(app) {
-  app.get('/test',function (req, res) {
+  app.get('/users/clear',function (req, res) {
     app.mongoose.user.remove({})
     .then(function (users){
       return res.json({
@@ -10,7 +10,7 @@ const routes = function(app) {
       })
     })
   })
-  app.get('/test2',function (req, res) {
+  app.get('/users/viewAll',function (req, res) {
     app.mongoose.user.find({})
     .then(function (users){
       return res.json({
@@ -85,14 +85,6 @@ const routes = function(app) {
             return saveUserToDbBatch(newUsers)
           }))
         })
-      // return Promise.all(games.map(function (game) {
-      //   var playerIds = game.fellowPlayers.map(function (player) {
-      //     return player.summonerId
-      //   }).join(',')
-      //   return checkDbBatch(playerIds)
-      //   .then(getSummonerNameBatch)
-      //   .then(saveUserToDbBatch)
-      // }))
       .then(function (result) {
         console.log('made it to this spot', result)
         result = _.flatten(result)
@@ -110,7 +102,6 @@ const routes = function(app) {
             console.log('player after', gameInfo.games[gameIndex].fellowPlayers[index])
           })
         })
-        //var i = getSummonerNames(result.playerIds)
         return res.json({
           succuss: true,
           result: result,
@@ -120,7 +111,6 @@ const routes = function(app) {
     })
   })
   function checkIfAlreadyHaveSummonerInfo (summonerId) {
-    //var summonerId = req.params.summonerId;
     console.log("hello from checking the db")
     return app.mongoose.user.find({
       id: summonerId
