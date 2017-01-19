@@ -1,6 +1,7 @@
 const { connect } = require('react-redux')
 const Landing = require('../components/Landing.jsx')
-const { changeHighlightedSummoner } = require('../actions/index.jsx')
+const { getGameData } = require('../actions/index.jsx')
+const { hashHistory } = require('react-router')
 
 const mapStateToProps = (state) => {
   return { hp: state.players.highlightedPlayer }
@@ -9,19 +10,15 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getSummonerStats: (event) => {
-
-      console.log('event', event)
       let {summonerName} = event
-      dispatch(changeHighlightedSummoner(summonerName))
+      dispatch(getGameData(summonerName))
+      let path = `/summoner/${summonerName}`
+      hashHistory.push(path)
     },
     handleInputChange: (event) => {
-
-      console.log('event', event)
-      //dispatch(changeHighlightedSummoner())
     }
   }
 }
 
 const VisableLanding = connect(mapStateToProps, mapDispatchToProps)(Landing)
-console.log('VisableLanding', VisableLanding)
 module.exports = VisableLanding

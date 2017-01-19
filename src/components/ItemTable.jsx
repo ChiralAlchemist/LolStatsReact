@@ -19,14 +19,14 @@ const ItemTable = React.createClass({
         <table>
           <tbody>
             <tr>
-              <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item0 + '.png'} /> </td>
-              <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item1 + '.png'} /> </td>
-              <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item2 + '.png'} /> </td>
+              {item0 ? <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item0 + '.png'} /> </td> : <td></td>}
+              {item1 ? <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item1 + '.png'} /> </td> : <td></td>}
+              {item2 ? <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item2 + '.png'} /> </td> : <td></td>}
             </tr>
             <tr>
-              <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item3 + '.png'} /> </td>
-              <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item4 + '.png'} /> </td>
-              <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item5 + '.png'} /> </td>
+              {item3 ? <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item3 + '.png'} /> </td> : <td></td>}
+              {item4 ? <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item4 + '.png'} /> </td> : <td></td>}
+              {item5 ? <td><img className='itemPicture' src={'http://ddragon.leagueoflegends.com/cdn/6.21.1/img/item/' + item5 + '.png'} /> </td> : <td></td>}
             </tr>
           </tbody>
         </table>
