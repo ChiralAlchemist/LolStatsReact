@@ -8,7 +8,10 @@ import App from './components/App.jsx'
 const { Router, Route, hashHistory, IndexRoute } = require('react-router')
 const VisableLanding = require('./containers/Landing.jsx')
 console.log('thunk', typeof thunk)
-const store = createStore(LoLapp, applyMiddleware(thunk))
+import { composeWithDevTools } from 'redux-devtools-extension'
+const store = createStore(LoLapp, composeWithDevTools(
+  applyMiddleware(thunk)
+))
 const GameContainer = require('./containers/GameContainer.jsx')
 
 render(
