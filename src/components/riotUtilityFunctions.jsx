@@ -3,8 +3,8 @@ const _ = require('lodash')
 
 var utils = {
   getChampionName (id) {
-    var champion = _.find(ChampionData, {'key': id.toString()})
-    return champion.id
+    var champion = _.find(ChampionData, {'key': id.toString()}) || {}
+    return champion.id || "championNotFound"
   },
   filterPlayers (player, whichTeam) {
     let { teamId } = this.props.game
