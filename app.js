@@ -17,7 +17,7 @@ const express = require('express');
 //const webpackHotMiddleware = require('webpack-hot-middleware');
 
 const isDeveloping = process.env.NODE_ENV !== 'production';
-const port = isDeveloping ? 8080 : process.env.PORT;
+const port = process.env.PORT || 8080;//isDeveloping ? 8080 : ;
 const app = express();
 
 var assert = require('assert');
