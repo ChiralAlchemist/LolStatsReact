@@ -17,10 +17,10 @@ export const convertSummonerNameToId = (summonerName) => {
 
 export const getGameData = (summonerName) => {
   return function (dispatch) {
-    dispatch(changeHighlightedSummoner(summonerName))
     return axios.get(`/api/gameInfo/${summonerName}`)
       .then(function (response) {
         let games = response.data.gameInfo.games
+        dispatch(changeHighlightedSummoner(summonerName))
         dispatch(changeGames(games))
       })
   }

@@ -1,9 +1,11 @@
 const React = require('react')
 const GameCard = require('./GameCard.jsx')
 const { Link } = require('react-router')
+const SearchForm = require('./SearchForm.jsx')
 
-const GameContainer = ({games, highlightedPlayer}) => (
+const GameContainer = ({games, highlightedPlayer, getSummonerStats}) => (
   <div className='container'>
+    <SearchForm onSubmit={getSummonerStats} />
     <li><Link to='/'> Back </Link></li>
     <div className='shows'>
     {
