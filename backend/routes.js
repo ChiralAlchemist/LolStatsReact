@@ -86,22 +86,20 @@ const routes = function(app) {
           }))
         })
       .then(function (result) {
-        console.log('made it to this spot', result)
         result = _.flatten(result)
         gameInfo.games.forEach(function (game, gameIndex) {
           game.fellowPlayers.forEach(function (player, index) {
             var playerWithName = _.find(gameInfo.dbResults, {id : player.summonerId}) || _.find(result, {id: player.summonerId})
+            playerWithName = playerWithName || {}
             var name = playerWithName.name
             var profileIconId = playerWithName.profileIconId
             var summonerLevel = playerWithName.summonerLevel
-            console.log("player b4", player, playerWithName)
-            // if(playerWithName) gameInfo.games[gameIndex].fellowPlayers[index] = playerWithName
             gameInfo.games[gameIndex].fellowPlayers[index].name = name
             gameInfo.games[gameIndex].fellowPlayers[index].profileIconId = profileIconId
             gameInfo.games[gameIndex].fellowPlayers[index].summonerLevel = summonerLevel
-            console.log('player after', gameInfo.games[gameIndex].fellowPlayers[index])
           })
         })
+        console.log("finished organinzing data")
         return res.json({
           succuss: true,
           result: result,
@@ -163,6 +161,7 @@ const routes = function(app) {
     })
   }
   function saveUserToDbBatch (userColllection) {
+    console.log("userColllection", userColllection)
     userColllection = Object.keys(userColllection).map(function (key, index) {
       return userColllection[key]
     })
@@ -212,16 +211,15 @@ function getSummonerNameBatch (playerIds) {
 }
 function getSummonerNames(playerIds) {
   var groups = []
-  if(playerIds.length>40){
 
-    while(playerIds.length>40 || playerIds.length){
-      if(playerIds.length>=40){
-        groups.push(playerIds.splice(0,40))
-      } else {
-        groups.push(playerIds.splice(0, playerIds.length))
-      }
+  while(playerIds.length>40 || playerIds.length){
+    if(playerIds.length>=40){
+      groups.push(playerIds.splice(0,40))
+    } else {
+      groups.push(playerIds.splice(0, playerIds.length))
     }
   }
+
   return Promise.all(groups.map(function (group){
     return getSummonerNameBatch(group.join(','))
   })
