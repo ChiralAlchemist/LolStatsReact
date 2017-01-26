@@ -30,7 +30,6 @@ const GameCard = React.createClass({
     let self = this
     let {fellowPlayers, championId, stats} = this.props.game
     let highlightedPlayer = {name: this.props.highlightedPlayer, championId: championId}
-    console.log('this.props in game card', this.props)
     let championName = this.getChampionName(championId)
     let playersTeam = fellowPlayers.filter(function (player) {
       return self.filterPlayers(player)
