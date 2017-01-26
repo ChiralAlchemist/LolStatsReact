@@ -27,6 +27,10 @@ var utils = function (app) {
       })
       .catch(function (err){
         console.log('mistakes were made', err)
+        return Promise.resolve({
+          playerIds: playerIds,
+          savedUsers: []
+        })
       })
     },
     getSummonerNames: function (playerIds) {
@@ -86,6 +90,10 @@ var utils = function (app) {
         return app.mongoose.user.findOneAndUpdate({id :user.id}, user, {upsert: true, new: true})
           .then(function (savedUser) {
             return Promise.resolve(savedUser);
+          })
+          .catch(function (error) {
+            console.log('error saving users', error, user)
+            return Promise.resolve(user)
           })
       })
       return Promise.all(userColllectionPromises)
