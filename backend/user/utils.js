@@ -3,9 +3,11 @@ const _ = require("lodash");
 var utils = function (app) {
   return {
     checkDbBatch: checkDbBatch,
+    getSummonerId: getSummonerId,
     getSummonerNames: getSummonerNames,
     getSummonerName: getSummonerName,
     getSummonerNameBatch: getSummonerNameBatch,
+    getRecentGames: getRecentGames,
     saveUserToDbBatch: saveUserToDbBatch
   }
   //////////////////////
@@ -58,6 +60,18 @@ var utils = function (app) {
     }))
   }
 
+  function getSummonerId (summonerName) {
+      console.log('hello from getSummonerId', summonerName)
+      return axios.get(`https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/${summonerName}?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446`)
+        .then(function (response){
+          return response.data[summonerName.toLowerCase()].id
+        })
+        .catch(function (response){
+          return 404;
+        })
+
+  }
+
   function getSummonerName (summonerId) {
     return axios.get("https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+ summonerId+ "?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446")
       .then(function (res){
@@ -76,8 +90,6 @@ var utils = function (app) {
   }
 
   function getSummonerNameBatch (playerIds) {
- //given string of comma separated of playerIds
- //riot api can only take 40 ids at a time
    return axios.get("https://na.api.pvp.net/api/lol/na/v1.4/summoner/"+ playerIds+ "?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446")
      .then(function (res){
        return Promise.resolve(res.data)
@@ -92,7 +104,12 @@ var utils = function (app) {
          }, retryTime)
        })
      })
- }
+   }
+
+  function getRecentGames (summonerId) {
+    console.log('hello from getRecentGames', summonerId)
+    return axios.get(`https://na.api.pvp.net/api/lol/na/v1.3/game/by-summoner/${summonerId}/recent?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446`)
+  }
 
  function saveUserToDbBatch (userColllection) {
    userColllection = Object.keys(userColllection).map(function (key, index) {

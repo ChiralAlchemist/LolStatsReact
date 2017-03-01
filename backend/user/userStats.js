@@ -7,12 +7,17 @@ const userStats = function (app) {
     getStats :function (req, res) {
       var summonerName = req.params.summonerName
       var gameInfo = {}
-      axios.get(`https://na.api.pvp.net/api/lol/na/v1.4/summoner/by-name/${summonerName}?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446`)
-      .then(function (response) {
-        var summonerId = response.data[summonerName.toLowerCase()].id
-        return axios.get(`https://na.api.pvp.net/api/lol/na/v1.3/game/by-summoner/${summonerId}/recent?api_key=ff62241d-f02d-443b-8309-c4b10a4bc446`)
+      userUtils.getSummonerId(summonerName)
+      .then(function(summonerId) {
+        if(summonerId === 404) {
+          return res.json({
+              result: 404
+          })
+        }
+        return userUtils.getRecentGames(summonerId)
       })
       .then(function (response) {
+        console.log("made it here")
         gameInfo = response.data
         var games = response.data.games
         var count = 0;
@@ -51,6 +56,9 @@ const userStats = function (app) {
             result: result,
             gameInfo: gameInfo
           })
+        })
+        .catch(function (error){
+          console.log('error :', error);
         })
       })
     }
